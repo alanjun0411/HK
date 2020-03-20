@@ -1,21 +1,36 @@
 import React,{ Component } from 'react'
+
+import { HashRouter as Router, Route} from 'react-router-dom'
 import { TabBar } from 'antd-mobile';
-
+import Home from '../view/home'
+import Found from '../view/found'
+import News from '../view/news'
+import My from '../view/my'
 class TabBarExample extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
-      selectedTab: 'redTab',
+      selectedTab: 'blueTab',
       hidden: false
-    };
+    }
+    window.location=(`#/`)
   }
 
-  renderContent(pageText) {
+  renderContent = () => {
     return (
-        <div>{pageText}</div>
-    )
+      <div>
+        <Router>
+          <Route exact path="/" component={Home}></Route>
+          <Route path="/Found" component={Found}></Route>
+          <Route path="/News" component={News}></Route>
+          <Route path="/My" component={My}></Route>
+        </Router>
+    </div>)
   }
-
+  pressEvent= (selectedTab, path) => {
+    this.setState({selectedTab})
+    window.location=(`#${path}`)
+  }
   render() {
     return (
       <div style={ {position: 'fixed', height: '100%', width: '100%', top: 0 }}>
@@ -31,14 +46,10 @@ class TabBarExample extends Component {
             icon={<i className="iconfont icon-shouye"></i>}
             selectedIcon={<i className="iconfont icon-shouye"></i>}
             selected={this.state.selectedTab === 'blueTab'}
-            onPress={() => {
-              this.setState({
-                selectedTab: 'blueTab',
-              });
-            }}
+            onPress={() => this.pressEvent('blueTab','/')}
             data-seed="logId"
           >
-            {this.renderContent('Life')}
+            {this.renderContent()}
           </TabBar.Item>
           <TabBar.Item
             icon={<i className="iconfont icon-sousuo"></i>}
@@ -46,14 +57,10 @@ class TabBarExample extends Component {
             title="找房"
             key="found"
             selected={this.state.selectedTab === 'redTab'}
-            onPress={() => {
-              this.setState({
-                selectedTab: 'redTab',
-              });
-            }}
+            onPress={() => this.pressEvent('redTab','/Found')}
             data-seed="logId1"
           >
-            {this.renderContent('Koubei')}
+            {this.renderContent()}
           </TabBar.Item>
           <TabBar.Item
             icon={<i className="iconfont icon-dingdan"></i>}
@@ -61,13 +68,9 @@ class TabBarExample extends Component {
             title="资讯"
             key="news"
             selected={this.state.selectedTab === 'greenTab'}
-            onPress={() => {
-              this.setState({
-                selectedTab: 'greenTab',
-              });
-            }}
+            onPress={() => this.pressEvent('greenTab','/News')}
           >
-            {this.renderContent('Friend')}
+            {this.renderContent()}
           </TabBar.Item>
           <TabBar.Item
             icon={<i className="iconfont icon-icon-test1"></i>}
@@ -75,18 +78,13 @@ class TabBarExample extends Component {
             title="我的"
             key="my"
             selected={this.state.selectedTab === 'yellowTab'}
-            onPress={() => {
-              this.setState({
-                selectedTab: 'yellowTab',
-              });
-            }}
+            onPress={() => this.pressEvent('yellowTab','/My')}
           >
-            {this.renderContent('My')}
+            {this.renderContent()}
           </TabBar.Item>
         </TabBar>
       </div>
     );
   }
 }
-
 export default TabBarExample
