@@ -1,6 +1,6 @@
 import React,{ Component } from 'react'
 
-import { HashRouter as Router, Route} from 'react-router-dom'
+import { Route} from 'react-router-dom'
 import { TabBar } from 'antd-mobile';
 
 import Home from '../view/home'
@@ -13,18 +13,6 @@ class TabBarExample extends Component {
     this.state = {
       hidden: false
     }
-  }
-
-  renderContent = () => {
-    return (
-      <div>
-        <Router>
-          <Route path="/home/index" component={Home}></Route>
-          <Route path="/home/found" component={Found}></Route>
-          <Route path="/home/news" component={News}></Route>
-          <Route path="/home/my" component={My}></Route>
-        </Router>
-    </div>)
   }
   componentDidUpdate() {
     let {history, location} = this.props
@@ -54,7 +42,7 @@ class TabBarExample extends Component {
               onPress={()=>{history.push('/home/index')}}
               data-seed="logId"
             >
-              {this.renderContent()}
+              <Route path="/home/index" component={Home}></Route>
             </TabBar.Item>
             <TabBar.Item
               icon={<i className="iconfont icon-sousuo"></i>}
@@ -65,7 +53,7 @@ class TabBarExample extends Component {
               onPress={()=>{history.push('/home/found')}}
               data-seed="logId1"
             >
-              {this.renderContent()}
+              <Route path="/home/found" component={Found}></Route>
             </TabBar.Item>
             <TabBar.Item
               icon={<i className="iconfont icon-dingdan"></i>}
@@ -75,7 +63,7 @@ class TabBarExample extends Component {
               selected={location.pathname === '/home/news'}
               onPress={()=>{history.push('/home/news')}}
             >
-              {this.renderContent()}
+              <Route path="/home/news" component={News}></Route>
             </TabBar.Item>
             <TabBar.Item
               icon={<i className="iconfont icon-icon-test1"></i>}
@@ -85,7 +73,7 @@ class TabBarExample extends Component {
               selected={location.pathname === '/home/my'}
               onPress={()=>{history.push('/home/my')}}
             >
-              {this.renderContent()}
+              <Route path="/home/my" component={My}></Route>
             </TabBar.Item>
           </TabBar>
         </div>
