@@ -1,16 +1,8 @@
 import React,{Component} from 'react'
-import {connect} from 'react-redux'
-import {viewChange} from '../store/actionView'
 
 class Home extends Component{
-    componentDidMount() {
-        this.props.change(true)
-    }
-    componentWillUnmount() {
-        this.props.change(false)
-    }
     clickEvent= () => {
-        window.location=`#/map`
+        this.props.history.push('/map')
     }
     render() {
         return(
@@ -21,17 +13,4 @@ class Home extends Component{
         )
     }
 }
-const getView = (state) => {
-    return({
-        pathChange: state.viewControl.pathChange
-    })
-}
-const setView = (dispatch) => {
-    return({
-        change(value) {
-            dispatch(viewChange(value))
-        }
-    })
-}
-const connFun = connect(getView,setView)
-export default connFun(Home)
+export default Home
