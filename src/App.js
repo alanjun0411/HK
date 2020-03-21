@@ -1,7 +1,9 @@
 import React,{Component} from 'react'
 import { HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
 import TabBar from './components/TabBar'
-import Map from './view/map'
+import Map from './view/map/map'
+import Citylist from "./view/citylist/citylist"
+import Search from "./view/search/search";
 class App extends Component {
   render() {
     return (
@@ -15,6 +17,8 @@ class App extends Component {
             <Route path="/home" component={TabBar}></Route>
             {/* 纯页面组件 */}
             <Route path="/map" component={Map}></Route>
+            <Route path="/search" component={Search}></Route>
+            <Route path="/citylist" component={Citylist}></Route>
           </Switch>
         </Router>
       </div>

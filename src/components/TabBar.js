@@ -1,12 +1,12 @@
 import React,{ Component } from 'react'
 
 import { Route} from 'react-router-dom'
-import { TabBar } from 'antd-mobile';
+import { TabBar } from 'antd-mobile'
 
-import Home from '../view/home'
-import Found from '../view/found'
-import News from '../view/news'
-import My from '../view/my'
+import Home from '../view/home/home'
+import Found from '../view/found/found'
+import News from '../view/news/news'
+import My from '../view/my/my'
 class TabBarExample extends Component {
   constructor(props) {
     super(props)
