@@ -1,7 +1,9 @@
 import React,{Component} from 'react'
-import { Carousel, Toast } from 'antd-mobile';
+import { Carousel, Toast } from 'antd-mobile'
 import axios,{baseURL} from '../../utils/axios'
-import HomeScss from './home.module.scss';
+import HomeScss from './home.module.scss'
+import {connect} from 'react-redux'
+// import { mapCity } from '../../store/actionView'
 
 // 本地图片加载
 import Nav1 from '../../assct/img/nav-1.png';
@@ -27,7 +29,6 @@ class Home extends Component{
   }
   async componentDidMount(){
     Toast.loading('加载中...', 0)
-    this.loadScript()
     let carouseDdata = await this.getRes('/home/swiper')
     let groupsDdata = await this.getRes(`/home/groups?area=${'广州'}`)
     let newsDdata = await this.getRes(`/home/news?area=${'广州'}`)
@@ -43,17 +44,8 @@ class Home extends Component{
     return carouseDdata.data.body 
     
   }
-  loadScript=() =>{  
-    var url = 'https://webapi.amap.com/maps?v=1.4.15&key=4263d9995aff723bb05ec3317a2c8867&callback=onLoad';
-    var jsapi = document.createElement('script');
-    jsapi.charset = 'utf-8';
-    jsapi.src = url;
-    document.head.appendChild(jsapi);
-  }
-  getGeolocation() {
-  }
   render() {
-    let {history} = this.props
+    let {history, mapCity} = this.props
     return(
       <div className="home">
         {/* 1.轮播图 */}
@@ -85,7 +77,7 @@ class Home extends Component{
         <div className={HomeScss.search}>
           <div className={HomeScss.searchMain}>
             <div className={HomeScss.searchMainAddress} onClick={()=>history.push('/citylist')}>
-              <span>广州</span>
+              <span>{mapCity}</span>
               <span className="iconfont icon-icon-test3"></span>
             </div>
             <div className={HomeScss.searchMainSearch} onClick={()=>history.push('/search')}>
@@ -150,4 +142,9 @@ class Home extends Component{
     )
   }
 }
-export default Home
+const mapStateToProps = (state) => {
+  return  {
+    mapCity: state.mapControl.mapCity
+  }
+}
+export default connect(mapStateToProps)(Home)
