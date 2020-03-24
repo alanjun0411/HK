@@ -1,6 +1,7 @@
 import React,{PureComponent} from 'react'
 import { Toast } from 'antd-mobile';
 import axios from '../../utils/axios'
+import {connect} from 'react-redux'
 
 class Citylist extends PureComponent{
     constructor(props) {
@@ -12,34 +13,38 @@ class Citylist extends PureComponent{
     async componentDidMount() {
         Toast.loading('加载中...', 0)
         let cityList = (await axios.get('/area/city?level=1')).data.body
-        let newCityList = this.makData(cityList)
+        let hots = (await axios.get('/area/hot')).data.body
+        hots.sort((a,b) => a.short > b.short ? 1 : -1)
+        let newCityList = [{
+            name: '当前定位',
+            value: [{label:this.props.mapCity}]
+        },
+        {
+            name: '热门城市',
+            value: hots
+        }]
+        newCityList = this.makData(cityList, newCityList)
         this.setState({
             cityList: newCityList
         })
+        console.log(this.state)
         Toast.hide()
     }
-    makData= (data) => {
+    makData= (data, newCityList) => {
         let newData = {}
+        data.sort((a,b) => a.short > b.short ? 1 : -1)
         data.forEach(element => {
-            if (!newData[element.short.slice(0,1)]) {
-                newData[element.short.slice(0,1)] = []
-            }
-            newData[element.short.slice(0,1)].push({...element})
+            let key = element.short.slice(0,1).toUpperCase()
+            if (!newData[key]) newData[key] = []
+            newData[key].push({...element})
         })
-        data = []
         for(let i in newData) {
-            data.push(newData[i])
+            newCityList.push({
+                name: i,
+                value: newData[i]
+            })
         }
-        for(let i=0 ; i< data.length-1; i++){
-            for(let k=0 ; k< data.length-i-1; k++){
-                if(data[k][0].short.slice(0,1)>data[k+1][0].short.slice(0,1)){
-                    let max = data[k]
-                    data[k] = data[k+1]
-                    data[k+1] = max
-                }
-            }
-        }
-        return data
+        return newCityList
     }
     render() {
         return(
@@ -49,4 +54,9 @@ class Citylist extends PureComponent{
         )
     }
 }
-export default Citylist
+const mapStateToProps = (state) => {
+    return  {
+      mapCity: state.mapControl.mapCity
+    }
+  }
+export default connect(mapStateToProps)(Citylist)
