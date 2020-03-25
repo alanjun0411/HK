@@ -30,8 +30,8 @@ class Home extends Component{
   async componentDidMount(){
     Toast.loading('加载中...', 0)
     let carouseDdata = await this.getRes('/home/swiper')
-    let groupsDdata = await this.getRes(`/home/groups?area=${'广州'}`)
-    let newsDdata = await this.getRes(`/home/news?area=${'广州'}`)
+    let groupsDdata = await this.getRes(`/home/groups?area=${this.props.mapCity}`)
+    let newsDdata = await this.getRes(`/home/news?area=${this.props.mapCity}`)
     this.setState({
       carouseDdata,
       groupsDdata,
@@ -44,6 +44,7 @@ class Home extends Component{
     return carouseDdata.data.body 
     
   }
+  
   render() {
     let {history, mapCity} = this.props
     return(

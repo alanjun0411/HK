@@ -1,13 +1,18 @@
 import React,{PureComponent} from 'react'
-import { Toast } from 'antd-mobile';
+import { Toast, NavBar, Icon } from 'antd-mobile';
 import axios from '../../utils/axios'
 import {connect} from 'react-redux'
+import {List} from 'react-virtualized';
+import citylistCss from './citylist.module.scss'
+import {mapCityList} from '../../store/actionView'
 
 class Citylist extends PureComponent{
     constructor(props) {
         super(props)
         this.state = {
-            cityList: []
+            cityList: [],
+            cityListRight: ['#','热'],
+            activeIndex: 0
         }
     }
     async componentDidMount() {
@@ -27,7 +32,6 @@ class Citylist extends PureComponent{
         this.setState({
             cityList: newCityList
         })
-        console.log(this.state)
         Toast.hide()
     }
     makData= (data, newCityList) => {
@@ -38,25 +42,89 @@ class Citylist extends PureComponent{
             if (!newData[key]) newData[key] = []
             newData[key].push({...element})
         })
+        let cityListRight = this.state.cityListRight
         for(let i in newData) {
+            cityListRight.push(i)
             newCityList.push({
                 name: i,
                 value: newData[i]
             })
         }
+        this.setState({cityListRight})
         return newCityList
     }
+    rowRenderer = ({
+        key,
+        index,
+        isScrolling, 
+        isVisible,
+        style,
+      }) => {
+        return (
+          <div key={key} style={style}>
+            <div className={citylistCss.scrollAreaTitle}>{this.state.cityList[index].name}</div>
+            {this.state.cityList[index].value.map((v, i) => {
+                return (
+                    <div key={i} className={citylistCss.scrollAreaList} onClick={()=>this.onChangeCity(v.label)}>{v.label}</div>
+                )
+            })}
+          </div>
+        );
+    }
+    computeHeight= ({index}) => {
+        return 40 + this.state.cityList[index].value.length * 40
+    }
+    onRowsRendered= ({startIndex}) => {
+        this.setState({activeIndex: startIndex})
+    }
+    onChangeCity= (city) => {
+        this.props.cityChange(city)
+        this.props.history.goBack()
+    }
     render() {
+        let {history} = this.props
         return(
             <div>
-                Citylist
+               <div className="goBack">
+                <NavBar
+                  mode="light"
+                  icon={<Icon type="left" />}
+                  onLeftClick={() => history.goBack()}
+                >城市选择</NavBar>
+               </div>
+               <div className={citylistCss.scrollArea}>
+               <List
+                  width={window.screen.width}
+                  height={window.screen.height-45}
+                  rowCount={this.state.cityList.length}
+                  rowHeight={this.computeHeight}
+                  rowRenderer={this.rowRenderer}
+                  onRowsRendered={this.onRowsRendered}
+                  scrollToIndex={this.state.activeIndex}
+                //   这是列表的必须配置一定不能少
+                  scrollToAlignment='start'
+                />
+                <div className={citylistCss.scrollAreaLeft}>
+                    {this.state.cityListRight.map((v, i) => <div key={i} className={[
+                        citylistCss.scrollAreaLeftOne,
+                        this.state.activeIndex === i ?  citylistCss.scrollAreaActive: ''
+                    ].join(' ')} onClick={()=>this.setState({activeIndex: i})}>{v}</div>)}
+                </div>
+               </div>
             </div>
         )
     }
 }
 const mapStateToProps = (state) => {
-    return  {
-      mapCity: state.mapControl.mapCity
-    }
+  return  {
+    mapCity: state.mapControl.mapCity
   }
-export default connect(mapStateToProps)(Citylist)
+}
+const mapStateToChanges = (dispatch) =>{
+    return {
+        cityChange(city){
+            dispatch(mapCityList(city))
+        }
+    }
+}
+export default connect(mapStateToProps,mapStateToChanges)(Citylist)

@@ -20,3 +20,11 @@ export const mapCity = () => {
         })
     }
 }
+export const mapCityList = (city) => {
+  return (dispatch) => {
+    dispatch({
+      type: 'mapCity',
+      value: city
+    })
+  }
+}

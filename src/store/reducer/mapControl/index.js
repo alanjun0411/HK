@@ -5,8 +5,11 @@ const defaultState = {
 export default (state = defaultState, action) =>{
     if (action.type === 'mapCity') {
         let newState = JSON.parse(JSON.stringify(state))
-        newState.mapCity = action.value.slice(0,action.value.indexOf('市'))
-        // console.log(newState);
+        if (action.value.indexOf('市') !== -1) {
+            newState.mapCity = action.value.slice(0,action.value.indexOf('市'))
+        }else{
+            newState.mapCity = action.value
+        }
         return newState
     }
     return state
